@@ -157,17 +157,22 @@ test('sanitizer keeps editor output and strips active content', async () => {
   const d = (await alice('GET', `/api/documents/${id}`)).body;
 
   const editorHtml = '<h2>H</h2><ol><li class="ql-indent-1">a</li></ol><ul><li>b</li></ul>'
-    + '<p class="ql-align-center">c</p><a href="https://ok.test">link</a><blockquote><u>q</u></blockquote>';
+    + '<p class="ql-align-center">c</p><a href="https://ok.test">link</a><blockquote><u>q</u></blockquote>'
+    // Quill 2 renders every list as <ol> and records the kind on the <li>.
+    + '<ol><li data-list="bullet"><span class="ql-ui" contenteditable="false"></span>bul</li></ol>'
+    + '<ol><li data-list="ordered">num</li></ol>';
   const hostile = '<a href="javascript:alert(1)">x</a><svg onload=alert(1)></svg>'
-    + '<iframe src="https://evil.test"></iframe><p style="position:fixed" onclick="evil()">s</p>';
+    + '<iframe src="https://evil.test"></iframe><p style="position:fixed" onclick="evil()">s</p>'
+    + '<li data-list="bullet" onmouseover="evil()">y</li>';
 
   await alice('PUT', `/api/documents/${id}`, { content: editorHtml + hostile, version: d.version });
   const saved = (await alice('GET', `/api/documents/${id}`)).body.content;
 
-  for (const keep of ['<h2>H</h2>', 'ql-indent-1', '<ul><li>b</li></ul>', 'ql-align-center', 'https://ok.test', '<u>q</u>']) {
+  for (const keep of ['<h2>H</h2>', 'ql-indent-1', '<ul><li>b</li></ul>', 'ql-align-center', 'https://ok.test', '<u>q</u>',
+    'data-list="bullet"', 'data-list="ordered"', '>bul<', '>num<']) {
     assert.ok(saved.includes(keep), `expected ${keep} to survive`);
   }
-  for (const drop of ['javascript:', '<svg', '<iframe', 'onclick', 'style=', 'position:fixed']) {
+  for (const drop of ['javascript:', '<svg', '<iframe', 'onclick', 'onmouseover', 'style=', 'position:fixed', '<span']) {
     assert.ok(!saved.includes(drop), `expected ${drop} to be stripped`);
   }
 });

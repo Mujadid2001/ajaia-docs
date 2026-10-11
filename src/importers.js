@@ -11,7 +11,10 @@ const loadMarked = () => (markedPromise ??= import('marked').then((m) => m.marke
 const SANITIZE = {
   allowedTags: ['p', 'br', 'h1', 'h2', 'h3', 'strong', 'b', 'em', 'i', 'u', 's',
     'ul', 'ol', 'li', 'blockquote', 'pre', 'code', 'a'],
-  allowedAttributes: { a: ['href'], '*': ['class'] },
+  // Quill 2 renders every list as <ol> and stores the kind on the <li> as
+  // data-list="bullet|ordered|checked". Dropping it would silently turn all
+  // bullet lists into numbered ones on the next load.
+  allowedAttributes: { a: ['href'], li: ['data-list', 'data-list-id'], '*': ['class'] },
   allowedSchemes: ['http', 'https', 'mailto'],
   allowedClasses: { '*': [/^ql-/] },
 };

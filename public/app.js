@@ -124,7 +124,11 @@ async function renderEditor(id) {
     h('div', { id: 'editor-wrap' }, toolbar, editorEl));
 
   const quill = new Quill(editorEl, { theme: 'snow', readOnly: !canEdit, modules: { toolbar }, placeholder: canEdit ? 'Start writing…' : '' });
-  quill.setContents(quill.clipboard.convert(doc.content), 'silent');
+  // clipboard.convert() takes an {html, text} object, not a bare string —
+  // passing a string yields an empty delta and silently loads a blank document.
+  const html = doc.content || '';
+  const plain = new DOMParser().parseFromString(html, 'text/html').body.textContent || '';
+  quill.setContents(quill.clipboard.convert({ html, text: plain }), 'silent');
 
   async function save() {
     if (!dirty || saving || blocked) return;
