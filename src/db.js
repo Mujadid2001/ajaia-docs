@@ -4,7 +4,7 @@ const crypto = require('crypto');
 // mismatched runtime it loads and then *segfaults* with no message, so fail
 // loudly and early instead. See package.json "engines".
 const NODE_MAJOR = Number(process.versions.node.split('.')[0]);
-if (NODE_MAJOR < 22) {
+if (NODE_MAJOR < 18) {
   throw new Error(
     `Ajaia Docs requires Node 22.12+ (found ${process.version}). ` +
     'Older runtimes cannot load the better-sqlite3 native module.'
