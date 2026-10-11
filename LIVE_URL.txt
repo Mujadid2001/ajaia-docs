@@ -6,10 +6,28 @@ STATUS
   Repo:   https://github.com/Mujadid2001/ajaia-docs  (public, branch: main)
   Image:  builds locally and was verified end to end (docker build + run,
           full API flow, and a 24-check browser walkthrough of the demo script).
-  Blocker: Render refuses to create any service on this workspace until
-          payment information is added, even for the free tier.
+  Blocker: no hosting account with a usable API token is available here, so
+          no public URL can be produced. No URL is listed because none exists.
 
-TO FINISH (about one minute once billing is set)
+HOSTS CHECKED (all rejected, for the reasons given)
+  Render    API key works and the workspace is "My Workspace"
+            (mujadid20001@gmail.com), but every create call returns
+            "Payment information is required". Render gates *all* service
+            creation on billing, including the free tier. No service was
+            created. Blueprint creation via API is early-access only.
+  Koyeb     API unreachable from this machine, and Koyeb now requires a
+            credit card ($29 pre-authorisation hold) for its free tier.
+  Fly.io / Railway / Northflank
+            APIs are reachable but every one needs an account token, and
+            their free tiers also require a card.
+  Cloudflare quick tunnel (no account needed)
+            This was actually run and returned a real public URL, but it is
+            not a deployment: only 2 of 6 probe requests succeeded and the
+            browser walkthrough failed to load its assets. Quick tunnels are
+            rate-limited with no SLA and die with the process, so the URL was
+            discarded rather than published.
+
+TO FINISH (about a minute, once billing is set on an account)
   1. Open https://dashboard.render.com/billing and add a card to the
      "My Workspace" workspace. Render gates all service creation on this.
   2. Then either:
