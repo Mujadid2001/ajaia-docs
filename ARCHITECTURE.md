@@ -5,8 +5,8 @@ Single Node process: Express serves a JSON API and the static SPA. SQLite (bette
 
 ## What I prioritized, and why
 1. **Authorization correctness over feature breadth.** One function (`roleFor`) decides owner/editor/viewer; every route goes through `load(req, {need})`. Users with no access get **404, not 403**, so document IDs don't leak existence. This is the part that is expensive to retrofit and the part tests cover most heavily.
-2. **Safe persistence of rich text.** Content is stored as HTML, sanitized on the server with an allow-list matching what the editor can emit. This blocks stored XSS from pasted/imported/API-crafted content. Imports (`.md`, `.docx`, `.txt`) pass through the same sanitizer. Client renders user strings via `textContent` only.
-3. **Don't lose data silently.** Autosave is debounced and flushes on blur/tab-hide; `beforeunload` warns on unsaved changes. Saves carry a `version`; the update is a compare-and-swap, so concurrent editors get a clear 409 instead of last-write-wins data loss.
+2. **Safe persistence of rich text.** Content is stored as HTML, sanitized on the server with an allow-list matching what the editor can emit. This blocks stored XSS from pasted/imported/API-crafted content. Imports (`.md`, `.docx`, `.txt`) pass through the same sanitizer. Client renders user strings via `textContent` only. The allow-list has to track the editor: Quill 2 renders *every* list as `<ol>` and records the kind in `data-list` on the `<li>`, so dropping that attribute silently turns all bullet lists into numbered ones. `public/app.js` likewise has to call `clipboard.convert({ html, text })` with an object — the bare-string form returns an empty delta and opens a blank document.
+3. **Don't lose data silently.** Autosave is debounced and flushes on blur/tab-hide; `beforeunload` warns on unsaved changes. Saves carry a `version`; the update is a compare-and-swap, so concurrent editors get a clear 409 instead of last-write-wins data loss. Only failures that can succeed on retry (network, 5xx) re-queue automatically — re-arming the debounce after a 400 turns it into an endless request loop, so validation errors wait for the next edit.
 4. **A usable editor within scope.** Quill gives a coherent toolbar, keyboard shortcuts and undo/redo for free; I spent time on flow (autosave status, read-only mode for viewers, empty states, error messages) rather than on a custom editor.
 
 ## Deliberate cuts
@@ -17,4 +17,4 @@ Single Node process: Express serves a JSON API and the static SPA. SQLite (bette
 - **SQLite on an ephemeral disk** for the free deployment. The data layer is ~40 lines of SQL, so a Postgres move is mechanical.
 
 ## Known risks / next steps
-Add document revision history; Yjs for real-time; Playwright E2E for the editor flow (current automated tests cover the API and access logic, not browser UI); audit log for sharing changes; pagination on document lists.
+Add document revision history; Yjs for real-time; commit a browser E2E suite for the editor flow (the `npm test` suite covers the API, access control, import and sanitizer, not the DOM); audit log for sharing changes; pagination on document lists.

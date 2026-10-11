@@ -5,11 +5,12 @@ Create, rich-text edit, import, and share documents. Node + Express + SQLite, va
 **Live URL:** _add after deploy (see "Deploy")_ · **Walkthrough:** see `walkthrough_video_url.txt`
 
 ## Run locally
-Requires Node 20+ (tested on 22).
+Requires **Node 22.12+** (tested on 22.23). Older runtimes cannot load the
+`better-sqlite3` native module — the app exits with a clear message instead.
 ```bash
 npm install
 npm start          # http://localhost:3000
-npm test           # 6 API/integration tests, in-memory SQLite
+npm test           # 12 API/integration tests, in-memory SQLite
 ```
 Optional env: `PORT`, `DB_PATH` (default `./data/app.db`), `SESSION_SECRET`.
 
@@ -35,5 +36,12 @@ Auth is **mocked**: pick one of three seeded users (alice / bob / carol `@ajaia.
 ## API
 `POST /api/login` · `GET/POST /api/documents` · `POST /api/documents/import` · `GET/PUT/DELETE /api/documents/:id` · `POST /api/documents/:id/shares` · `DELETE /api/documents/:id/shares/:userId`
 
+`PUT` is a compare-and-swap: it requires the `version` you last read and answers `409` if someone else saved in between. `GET/PUT/DELETE` return **404** (not 403) when you have no access, so document IDs never leak.
+
 ## Deploy
 Any Docker host works. For Render (free): push this repo to GitHub → *New → Blueprint* → select repo (`render.yaml` is picked up). Free-tier disks are ephemeral, so data resets on redeploy; the three demo users are re-seeded on boot. For durable data, attach a disk at `/data` (paid) or swap SQLite for Postgres.
+
+The image installs with `npm ci --ignore-scripts` so npm does not auto-run a `node-gyp` stub build for `better-sqlite3` (the slim base image has no Python or C++ toolchain). The prebuilt binary is used instead. See the comment in `Dockerfile`.
+
+## Known advisories
+`npm audit` reports 3 moderate advisories, all from one chain: `mammoth → argparse → sprintf-js` (GHSA-hp3w-g68c-fv3c, a DoS via unbounded printf precision). No patched `sprintf-js` exists yet, and the suggested fix is to downgrade Mammoth to `0.3.x`. Not done deliberately — it would trade a document importer for a decade-old build. Content from a `.docx` never reaches `sprintf-js` with user-controlled format strings. Re-check once an upstream fix lands.

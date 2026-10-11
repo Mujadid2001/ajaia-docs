@@ -1,1 +1,26 @@
-TODO: paste walkthrough video URL here
+WALKTHROUGH VIDEO — NOT YET RECORDED. This is an outstanding item.
+
+This file intentionally contains no URL: the video has not been recorded or
+uploaded yet, and inventing a link would be worse than admitting it is missing.
+
+To complete this item:
+  1. Record a ~2 minute screen capture following the "Demo script" section of
+     README.md. The app is already live (see LIVE_URL.txt), so no setup is
+     needed beyond two browser windows.
+  2. Upload it somewhere with a shareable link (e.g. an unlisted YouTube or
+     Vimeo link, or a Drive/Dropbox share link set to "anyone with the link").
+     Keep the file out of this repository - it should stay a link, not a
+     commit.
+  3. Replace this entire file with just the URL on its own line, and update the
+     "Walkthrough video URL" row in SUBMISSION.md and the header line in
+     README.md.
+
+Suggested shots, to cover the demo script end to end:
+  - Sign in as Alice, create a document, apply H1 / bold / bullet formatting,
+    then reload to show the content persisted.
+  - Upload notes.md; show it opens as a fully editable document.
+  - Share with bob@ajaia.test as "Can view".
+  - In a second window, sign in as Bob: the document appears under "Shared with
+    me" with a role badge and the editor is read-only. Alice upgrades him to
+    "Can edit"; Bob can now type and save.
+  - Open the document as carol@ajaia.test to show the 404 "Document not found".
