@@ -1,1 +1,31 @@
-TODO: paste deployed URL here
+LIVE URL — PENDING. The app is deployed-ready but is not currently serving a
+public URL. No URL is listed here because none exists yet; inventing one would
+be worse than saying so.
+
+STATUS
+  Repo:   https://github.com/Mujadid2001/ajaia-docs  (public, branch: main)
+  Image:  builds locally and was verified end to end (docker build + run,
+          full API flow, and a 24-check browser walkthrough of the demo script).
+  Blocker: Render refuses to create any service on this workspace until
+          payment information is added, even for the free tier.
+
+TO FINISH (about one minute once billing is set)
+  1. Open https://dashboard.render.com/billing and add a card to the
+     "My Workspace" workspace. Render gates all service creation on this.
+  2. Then either:
+       a. Dashboard: New -> Blueprint -> pick Mujadid2001/ajaia-docs
+          (render.yaml is picked up automatically), or
+       b. API: POST /v1/services with type "web_service", runtime "docker",
+          plan "free", repo https://github.com/Mujadid2001/ajaia-docs,
+          branch "main", and SESSION_SECRET generated.
+  3. Copy the resulting https://*.onrender.com URL over this file, and update
+     the header line in README.md.
+
+NOTE ON THE FREE TIER
+  The disk is ephemeral: documents reset on redeploy and on spin-down after
+  inactivity, and the three demo users are re-seeded on boot. Attach a paid
+  disk at /data if the data needs to survive redeploys. See README.md
+  ("Deploy") and ARCHITECTURE.md.
+
+SEED ACCOUNTS (mocked auth, pick one on the login screen)
+  alice@ajaia.test   bob@ajaia.test   carol@ajaia.test

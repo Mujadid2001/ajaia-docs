@@ -2,7 +2,7 @@
 
 Create, rich-text edit, import, and share documents. Node + Express + SQLite, vanilla JS + Quill on the front end.
 
-**Live URL:** _add after deploy (see "Deploy")_ · **Walkthrough:** see `walkthrough_video_url.txt`
+**Live URL:** see `LIVE_URL.txt` (pending — Render needs payment info on the workspace before it will create the service) · **Walkthrough:** see `walkthrough_video_url.txt` (outstanding, not yet recorded)
 
 ## Run locally
 Requires **Node 22.12+** (tested on 22.23). Older runtimes cannot load the
