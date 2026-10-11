@@ -1,0 +1,10 @@
+# Render Blueprint: free web service. Free tier has an ephemeral disk, so data
+# resets on redeploy/spin-down (acceptable for a demo; see ARCHITECTURE.md).
+services:
+  - type: web
+    name: ajaia-docs
+    runtime: docker
+    plan: free
+    envVars:
+      - key: SESSION_SECRET
+        generateValue: true

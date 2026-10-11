@@ -1,0 +1,24 @@
+{
+  "name": "ajaia-docs",
+  "version": "1.0.0",
+  "description": "Lightweight collaborative document editor (Ajaia take-home)",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test test/*.test.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "express": "^5.3.0",
+    "mammoth": "^1.13.0",
+    "marked": "^18.1.0",
+    "multer": "^2.4.0",
+    "quill": "^1.3.7",
+    "sanitize-html": "^2.18.0"
+  }
+}
